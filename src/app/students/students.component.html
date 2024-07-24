@@ -1,0 +1,130 @@
+<div class="row" style="height: 99%;">
+  <div [ngClass]="isSidePanelVisible ? 'col-8' : 'col-12'" style="height: 100%;">
+    <div class="card" style="height: 100%;">
+      <div class="card-header bg-primary text-white">
+        <div class="row">
+          <div class="col-6">
+            Student-list
+          </div>
+          <div class="col-6 text-end">
+            <button class="btn btn-sm btn-success" (click)="openSidePanel()">New</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Index</th>
+              <th scope="col">NAME</th>
+              <th scope="col">FATHER NAME</th>
+              <th scope="col">SCHOOL NAME</th>
+              <th scope="col">CLASS/STD</th>
+              <th scope="col">TEACHER NAME</th>
+              <th scope="col">ADDRESS</th>
+              <th scope="col">ACTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of students | paginate: { itemsPerPage: pageSize, currentPage: currentPage }; let i = index">
+              <td>{{ i + 1 + (pageSize * (currentPage - 1)) }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.father_name }}</td>
+              <td>{{ item.school_name }}</td>
+              <td>{{ item.class }}</td>
+              <td>{{ item.teacher_name }}</td>
+              <td>{{ item.address }}</td>
+              <td>
+                <button type="button" class="btn btn-secondary" (click)="onEdit(i)" style="width: 100px; height: 40px; margin-top: 5px;">EDIT</button>
+                <button type="button" class="btn btn-danger" (click)="onDelete(i)" [disabled]="disableDelete" style="margin-top: 5px; width: 100px; height: 40px;">DELETE</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="broo" style="padding-left: 30%;">
+        <pagination-controls (pageChange)="currentPage = $event"></pagination-controls>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isSidePanelVisible" class="col-4">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <div class="row">
+          <div class="col-6">
+            Add Student
+          </div>
+          <div class="col-6 text-end">
+            <button class="btn btn-sm btn-danger" (click)="closeSidePanel()">Close</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <form #studentForm="ngForm">
+          <div class="row">
+            <div class="col-6" style="margin-bottom: 60px;">
+              <label for="studentName">STUDENT NAME</label>
+              <input id="studentName" type="text" [(ngModel)]="student.name" class="form-control" required maxlength="50" minlength="5" name="studentName" #studentName="ngModel">
+              <span class="help-bpx" *ngIf="studentName.touched && !studentName.valid" style="color: red;">
+                <span *ngIf="studentName.errors?.['required']">Student's name is required.</span>
+                <span *ngIf="studentName.errors?.['minlength']">Student's name must be at least 5 characters long.</span>
+                <span *ngIf="studentName.errors?.['maxlength']">Student's name cannot exceed 50 characters.</span>
+              </span>
+            </div>
+        
+            <div class="col-6" style="margin-bottom: 60px;">
+              <label for="fatherName">FATHER NAME</label>
+              <input id="fatherName" type="text" [(ngModel)]="student.father_name" class="form-control" required maxlength="50" minlength="5" name="fatherName" #fatherName="ngModel">
+              <span class="fathername" *ngIf="fatherName.touched && !fatherName.valid" style="color: red;">
+                <span *ngIf="fatherName.errors?.['required']">Father's name is required.</span>
+                <span *ngIf="fatherName.errors?.['minlength']">Father's name must be at least 5 characters long.</span>
+                <span *ngIf="fatherName.errors?.['maxlength']">Father's name cannot exceed 50 characters.</span>
+              </span>
+            </div>
+        
+            <div class="col-6" style="margin-bottom: 60px;">
+              <label for="schoolName">SCHOOL NAME</label>
+              <input id="schoolName" type="text" [(ngModel)]="student.school_name" class="form-control" required maxlength="50" minlength="5" name="schoolName" #schoolName="ngModel">
+              <span class="schoolname" *ngIf="schoolName.touched && !schoolName.valid" style="color: red;">
+                <span *ngIf="schoolName.errors?.['required']">School name is required.</span>
+                <span *ngIf="schoolName.errors?.['minlength']">School name must be at least 5 characters long.</span>
+                <span *ngIf="schoolName.errors?.['maxlength']">School name cannot exceed 50 characters.</span>
+              </span>
+            </div>
+        
+            <div class="col-6" style="margin-bottom: 60px;">
+              <label for="class">CLASS/STD</label>
+              <select id="class" [(ngModel)]="student.class" class="form-control" name="classSelect" required #classSelect="ngModel">
+                <option *ngFor="let cls of classOptions" [value]="cls">{{ cls }}</option>
+              </select>
+              <div *ngIf="!classSelect.valid && classSelect.touched" class="classSelect" style="color: red;">Class is required.</div>
+            </div>
+        
+            <div class="col-6" style="margin-bottom: 60px;">
+              <label for="teacherName">TEACHER NAME</label>
+              <input id="teacherName" type="text" [(ngModel)]="student.teacher_name" class="form-control" required maxlength="50" minlength="5" name="teacherName" #teacherName="ngModel">
+              <span class="teachername" *ngIf="teacherName.touched && !teacherName.valid" style="color: red;">
+                <span *ngIf="teacherName.errors?.['required']">Teacher's name is required.</span>
+                <span *ngIf="teacherName.errors?.['minlength']">Teacher's name must be at least 5 characters long.</span>
+                <span *ngIf="teacherName.errors?.['maxlength']">Teacher's name cannot exceed 50 characters.</span>
+              </span>
+            </div>
+        
+            <div class="col-6" style="margin-bottom: 60px;">
+              <label for="address">ADDRESS</label>
+              <textarea id="address" [(ngModel)]="student.address" class="form-control" maxlength="500" name="address" #address="ngModel"></textarea>
+              <span *ngIf="address.errors && address.touched" style="color: red;">
+                <span *ngIf="address.errors?.['maxlength']">Address cannot exceed 500 characters.</span>
+              </span>
+            </div>
+        
+            <div class="col-12 text-end mt-3">
+              <button type="button" class="btn btn-primary" (click)="addStudent(studentForm)">Submit</button>
+            </div>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
